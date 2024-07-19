@@ -8,6 +8,8 @@ use std::borrow::Borrow;
 use std::cell::RefCell;
 use std::iter::Rev;
 
+use html5ever::tendril::StrTendril;
+
 use crate::node_data_ref::NodeDataRef;
 use crate::select::Selectors;
 use crate::tree::{ElementData, NodeRef};
@@ -373,12 +375,12 @@ filter_map_like_iterator! {
 
 filter_map_like_iterator! {
     /// A node iterator adaptor that yields comment nodes.
-    Comments: NodeRef::into_comment_ref, NodeRef => NodeDataRef<RefCell<String>>
+    Comments: NodeRef::into_comment_ref, NodeRef => NodeDataRef<RefCell<StrTendril>>
 }
 
 filter_map_like_iterator! {
     /// A node iterator adaptor that yields text nodes.
-    TextNodes: NodeRef::into_text_ref, NodeRef => NodeDataRef<RefCell<String>>
+    TextNodes: NodeRef::into_text_ref, NodeRef => NodeDataRef<RefCell<StrTendril>>
 }
 
 /// An element iterator adaptor that yields elements maching given selectors.

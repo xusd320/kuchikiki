@@ -1,3 +1,5 @@
+use html5ever::tendril::StrTendril;
+
 use crate::tree::{Doctype, DocumentData, ElementData, Node, NodeRef};
 use std::cell::RefCell;
 use std::fmt;
@@ -12,13 +14,13 @@ impl NodeRef {
 
     /// If this node is a text node, return a strong reference to its contents.
     #[inline]
-    pub fn into_text_ref(self) -> Option<NodeDataRef<RefCell<String>>> {
+    pub fn into_text_ref(self) -> Option<NodeDataRef<RefCell<StrTendril>>> {
         NodeDataRef::new_opt(self, Node::as_text)
     }
 
     /// If this node is a comment, return a strong reference to its contents.
     #[inline]
-    pub fn into_comment_ref(self) -> Option<NodeDataRef<RefCell<String>>> {
+    pub fn into_comment_ref(self) -> Option<NodeDataRef<RefCell<StrTendril>>> {
         NodeDataRef::new_opt(self, Node::as_comment)
     }
 

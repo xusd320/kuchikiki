@@ -7,6 +7,7 @@ use crate::iter::{NodeIterator, Select};
 use crate::node_data_ref::NodeDataRef;
 use crate::tree::{ElementData, Node, NodeData, NodeRef};
 use cssparser::{self, CowRcStr, ParseError, SourceLocation, ToCss};
+use html5ever::tendril::StrTendril;
 use html5ever::{LocalName, Namespace};
 use selectors::attr::{AttrSelectorOperation, CaseSensitivity, NamespaceConstraint};
 use selectors::context::QuirksMode;
@@ -26,7 +27,7 @@ static SELECTOR_WHITESPACE: &[char] = &[' ', '\t', '\n', '\r', '\x0C'];
 pub struct KuchikiSelectors;
 
 impl SelectorImpl for KuchikiSelectors {
-    type AttrValue = String;
+    type AttrValue = StrTendril;
     type Identifier = LocalName;
     type ClassName = LocalName;
     type LocalName = LocalName;
@@ -285,7 +286,7 @@ impl selectors::Element for NodeDataRef<ElementData> {
         &self,
         ns: &NamespaceConstraint<&Namespace>,
         local_name: &LocalName,
-        operation: &AttrSelectorOperation<&String>,
+        operation: &AttrSelectorOperation<&StrTendril>,
     ) -> bool {
         let attrs = self.attributes.borrow();
         match *ns {

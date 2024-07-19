@@ -119,7 +119,6 @@ impl TreeSink for Sink {
                     name: QualName { prefix, ns, local },
                     value,
                 } = attr;
-                let value = String::from(value);
                 (
                     attributes::ExpandedName { ns, local },
                     attributes::Attribute { prefix, value },
@@ -145,7 +144,7 @@ impl TreeSink for Sink {
             NodeOrText::AppendText(text) => {
                 if let Some(last_child) = parent.last_child() {
                     if let Some(existing) = last_child.as_text() {
-                        existing.borrow_mut().push_str(&text);
+                        existing.borrow_mut().push_tendril(&text);
                         return;
                     }
                 }
@@ -161,7 +160,7 @@ impl TreeSink for Sink {
             NodeOrText::AppendText(text) => {
                 if let Some(previous_sibling) = sibling.previous_sibling() {
                     if let Some(existing) = previous_sibling.as_text() {
-                        existing.borrow_mut().push_str(&text);
+                        existing.borrow_mut().push_tendril(&text);
                         return;
                     }
                 }
@@ -194,10 +193,7 @@ impl TreeSink for Sink {
             attributes
                 .map
                 .entry(attributes::ExpandedName { ns, local })
-                .or_insert_with(|| {
-                    let value = String::from(value);
-                    attributes::Attribute { prefix, value }
-                });
+                .or_insert_with(|| attributes::Attribute { prefix, value });
         }
     }
 

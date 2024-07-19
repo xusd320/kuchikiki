@@ -1,4 +1,4 @@
-use html5ever::{LocalName, Namespace, Prefix};
+use html5ever::{tendril::StrTendril, LocalName, Namespace, Prefix};
 use indexmap::{map::Entry, IndexMap};
 
 /// Convenience wrapper around a indexmap that adds method for attributes in the null namespace.
@@ -33,7 +33,7 @@ pub struct Attribute {
     /// The namespace prefix, if any
     pub prefix: Option<Prefix>,
     /// The attribute value
-    pub value: String,
+    pub value: StrTendril,
 }
 
 impl Attributes {
@@ -50,7 +50,7 @@ impl Attributes {
     }
 
     /// Like IndexMap::get_mut
-    pub fn get_mut<A: Into<LocalName>>(&mut self, local_name: A) -> Option<&mut String> {
+    pub fn get_mut<A: Into<LocalName>>(&mut self, local_name: A) -> Option<&mut StrTendril> {
         self.map
             .get_mut(&ExpandedName::new(ns!(), local_name))
             .map(|attr| &mut attr.value)
@@ -65,7 +65,7 @@ impl Attributes {
     pub fn insert<A: Into<LocalName>>(
         &mut self,
         local_name: A,
-        value: String,
+        value: StrTendril,
     ) -> Option<Attribute> {
         self.map.insert(
             ExpandedName::new(ns!(), local_name),

@@ -1,3 +1,4 @@
+use html5ever::tendril::StrTendril;
 use html5ever::tree_builder::QuirksMode;
 use html5ever::QualName;
 use std::cell::{Cell, RefCell};
@@ -16,13 +17,13 @@ pub enum NodeData {
     Element(ElementData),
 
     /// Text node
-    Text(RefCell<String>),
+    Text(RefCell<StrTendril>),
 
     /// Comment node
-    Comment(RefCell<String>),
+    Comment(RefCell<StrTendril>),
 
     /// Processing instruction node
-    ProcessingInstruction(RefCell<(String, String)>),
+    ProcessingInstruction(RefCell<(StrTendril, StrTendril)>),
 
     /// Doctype node
     Doctype(Doctype),
@@ -38,13 +39,13 @@ pub enum NodeData {
 #[derive(Debug, PartialEq, Clone)]
 pub struct Doctype {
     /// The name of the doctype
-    pub name: String,
+    pub name: StrTendril,
 
     /// The public ID of the doctype
-    pub public_id: String,
+    pub public_id: StrTendril,
 
     /// The system ID of the doctype
-    pub system_id: String,
+    pub system_id: StrTendril,
 }
 
 /// Data specific to element nodes.
@@ -227,13 +228,13 @@ impl NodeRef {
 
     /// Create a new text node.
     #[inline]
-    pub fn new_text<T: Into<String>>(value: T) -> NodeRef {
+    pub fn new_text<T: Into<StrTendril>>(value: T) -> NodeRef {
         NodeRef::new(NodeData::Text(RefCell::new(value.into())))
     }
 
     /// Create a new comment node.
     #[inline]
-    pub fn new_comment<T: Into<String>>(value: T) -> NodeRef {
+    pub fn new_comment<T: Into<StrTendril>>(value: T) -> NodeRef {
         NodeRef::new(NodeData::Comment(RefCell::new(value.into())))
     }
 
@@ -241,8 +242,8 @@ impl NodeRef {
     #[inline]
     pub fn new_processing_instruction<T1, T2>(target: T1, data: T2) -> NodeRef
     where
-        T1: Into<String>,
-        T2: Into<String>,
+        T1: Into<StrTendril>,
+        T2: Into<StrTendril>,
     {
         NodeRef::new(NodeData::ProcessingInstruction(RefCell::new((
             target.into(),
@@ -254,9 +255,9 @@ impl NodeRef {
     #[inline]
     pub fn new_doctype<T1, T2, T3>(name: T1, public_id: T2, system_id: T3) -> NodeRef
     where
-        T1: Into<String>,
-        T2: Into<String>,
-        T3: Into<String>,
+        T1: Into<StrTendril>,
+        T2: Into<StrTendril>,
+        T3: Into<StrTendril>,
     {
         NodeRef::new(NodeData::Doctype(Doctype {
             name: name.into(),
@@ -301,7 +302,7 @@ impl Node {
 
     /// If this node is a text node, return a reference to its contents.
     #[inline]
-    pub fn as_text(&self) -> Option<&RefCell<String>> {
+    pub fn as_text(&self) -> Option<&RefCell<StrTendril>> {
         match self.data {
             NodeData::Text(ref value) => Some(value),
             _ => None,
@@ -310,7 +311,7 @@ impl Node {
 
     /// If this node is a comment, return a reference to its contents.
     #[inline]
-    pub fn as_comment(&self) -> Option<&RefCell<String>> {
+    pub fn as_comment(&self) -> Option<&RefCell<StrTendril>> {
         match self.data {
             NodeData::Comment(ref value) => Some(value),
             _ => None,

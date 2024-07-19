@@ -1,5 +1,6 @@
 use html5ever::tree_builder::QuirksMode;
 use html5ever::QualName;
+use std::fmt::Write;
 use std::path::Path;
 
 use tempfile::TempDir;
@@ -27,15 +28,15 @@ fn text_nodes() {
         .text_nodes()
         .collect::<Vec<_>>();
     assert_eq!(texts.len(), 3);
-    assert_eq!(&*texts[0].borrow(), "Content contains ");
-    assert_eq!(&*texts[1].borrow(), "Important");
-    assert_eq!(&*texts[2].borrow(), " data");
+    assert_eq!(&*texts[0].borrow().to_string(), "Content contains ");
+    assert_eq!(&*texts[1].borrow().to_string(), "Important");
+    assert_eq!(&*texts[2].borrow().to_string(), " data");
     {
         let mut x = texts[0].borrow_mut();
-        x.truncate(0);
-        x.push_str("Content doesn't contain ");
+        x.clear();
+        x.write_str("Content doesn't contain ").unwrap();
     }
-    assert_eq!(&*texts[0].borrow(), "Content doesn't contain ");
+    assert_eq!(&*texts[0].borrow().to_string(), "Content doesn't contain ");
 }
 
 #[test]

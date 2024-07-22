@@ -228,41 +228,31 @@ impl NodeRef {
 
     /// Create a new text node.
     #[inline]
-    pub fn new_text<T: Into<StrTendril>>(value: T) -> NodeRef {
-        NodeRef::new(NodeData::Text(RefCell::new(value.into())))
+    pub fn new_text(value: StrTendril) -> NodeRef {
+        NodeRef::new(NodeData::Text(RefCell::new(value)))
     }
 
     /// Create a new comment node.
     #[inline]
-    pub fn new_comment<T: Into<StrTendril>>(value: T) -> NodeRef {
-        NodeRef::new(NodeData::Comment(RefCell::new(value.into())))
+    pub fn new_comment(value: StrTendril) -> NodeRef {
+        NodeRef::new(NodeData::Comment(RefCell::new(value)))
     }
 
     /// Create a new processing instruction node.
     #[inline]
-    pub fn new_processing_instruction<T1, T2>(target: T1, data: T2) -> NodeRef
-    where
-        T1: Into<StrTendril>,
-        T2: Into<StrTendril>,
-    {
+    pub fn new_processing_instruction(target: StrTendril, data: StrTendril) -> NodeRef {
         NodeRef::new(NodeData::ProcessingInstruction(RefCell::new((
-            target.into(),
-            data.into(),
+            target, data,
         ))))
     }
 
     /// Create a new doctype node.
     #[inline]
-    pub fn new_doctype<T1, T2, T3>(name: T1, public_id: T2, system_id: T3) -> NodeRef
-    where
-        T1: Into<StrTendril>,
-        T2: Into<StrTendril>,
-        T3: Into<StrTendril>,
-    {
+    pub fn new_doctype(name: StrTendril, public_id: StrTendril, system_id: StrTendril) -> NodeRef {
         NodeRef::new(NodeData::Doctype(Doctype {
-            name: name.into(),
-            public_id: public_id.into(),
-            system_id: system_id.into(),
+            name,
+            public_id,
+            system_id,
         }))
     }
 
